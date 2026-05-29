@@ -20,6 +20,12 @@ class VideoFormat {
   - file
 }
 
+
+class Role {
+  - label 
+}
+
 create : User "0,*" -- "1" Video
 have : Video "0,*" -- "1" VideoFormat
+defined : user "1,*" -- "0,*" Role
 @enduml

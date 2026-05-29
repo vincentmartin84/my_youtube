@@ -5,7 +5,6 @@ class User {
   - firstName varchar
   - lastName varchar
   - createdAt datetime
-  - user_id fk
 }
 
 class Video {
@@ -20,6 +19,15 @@ class VideoFormat {
   - format varchar
   - file varchar
   - video_id fk
+}
+
+class Role {
+  - labell
+}
+
+class Role_User {
+  user_id fk
+  role_id fk
 }
 
 
