@@ -1,0 +1,82 @@
+
+# connexion
+###
+POST http://localhost:8000/auth
+Accept: application/ld+json
+Content-Type: application/ld+json
+
+{
+  "email": "mario@mail.fr",
+  "password": "Mario/123"
+}
+
+
+# get all users
+###
+GET http://localhost:8000/api/users?page=1
+Accept: application/ld+json
+Authorization: Bearer {{token}}
+
+# get all video of user
+###
+GET http://localhost:8000/api/users/9/videos
+Accept: application/ld+json
+Authorization: Bearer {{token}}
+
+# get all comments by user
+###
+GET http://localhost:8000/api/users/9/comments
+Accept: application/ld+json
+Authorization: Bearer {{token}}
+
+# get all video format for an user
+###
+GET http://localhost:8000/api/users/9/videoformats
+Accept: application/ld+json
+Authorization: Bearer {{token}}
+
+
+# get user by id
+###
+GET http://localhost:8000/api/users/1
+Accept: application/ld+json
+Authorization: Bearer {{token}}
+
+# Create user
+###
+POST http://localhost:8000/api/users
+Accept: application/ld+json
+Content-Type: application/ld+json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "francis",
+  "lastName": "cabrel",
+  "email": "francis@mail.fr",
+  "password": "Francis/123",
+  "roles": ["ROLE_USER"]
+}
+
+
+
+
+# update user
+###
+PATCH http://localhost:8000/api/users/1
+Accept: application/ld+json
+Content-Type: application/merge-patch+json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "victor",
+  "lastName": "hugo",
+  "email": "victor@mail.fr",
+  "password": "Victor/123",
+  "roles": ["ROLE_ADMIN"]
+}
+
+# delete user
+###
+DELETE http://localhost:8000/api/users/1
+Accept: application/ld+json
+Authorization: Bearer {{token}}

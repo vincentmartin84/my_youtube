@@ -1,0 +1,33 @@
+# Create roles
+###
+POST http://localhost:3000/roles
+Accept: application/json
+Content-Type: application/json
+#Authorization: Bearer {{token}}
+
+{
+  "label" : "ROLE_ADMIN"
+}
+
+
+# update role
+###
+PATCH http://localhost:3000/roles/1
+Accept: application/json
+Content-Type: application/json
+#Authorization: Bearer {{token}}
+
+{
+  "label" : "ROLE_test"
+}
+
+# get all roles
+###
+GET http://localhost:3000/roles
+# get role by id
+###
+GET  http://localhost:3000/roles/1
+
+# delete role
+###
+DELETE http://localhost:3000/roles/1
