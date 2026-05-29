@@ -17,10 +17,12 @@ export class UsersRepository {
     private readonly repository: Repository<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.repository.create(createUserDto);
-    return await this.repository.save(user);
-  }
+  async createUser(data: Partial<User>): Promise<User> {
+  const user = this.repository.create(data);
+
+  return await this.repository.save(user);
+}
+  
 
   async findAll(options?: FindManyOptions<User>): Promise<User[]> {
     return await this.repository.find(options);

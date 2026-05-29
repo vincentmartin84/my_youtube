@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 
 import { Role } from '../entities/role.entity';
 import { CreateRoleDto } from '../dto/create-role.dto';
@@ -15,6 +15,7 @@ export class RolesRepository {
 
   async createRole(createRoleDto: CreateRoleDto): Promise<Role> {
     const role = this.repository.create(createRoleDto);
+
     return await this.repository.save(role);
   }
 
@@ -28,7 +29,14 @@ export class RolesRepository {
     });
   }
 
-  async updateRole(id: number, updateRoleDto: UpdateRoleDto): Promise<Role | null> {
+  async findOne(options: FindOneOptions<Role>): Promise<Role | null> {
+    return await this.repository.findOne(options);
+  }
+
+  async updateRole(
+    id: number,
+    updateRoleDto: UpdateRoleDto,
+  ): Promise<Role | null> {
     const role = await this.repository.findOne({
       where: { id },
     });
@@ -38,6 +46,7 @@ export class RolesRepository {
     }
 
     const updatedRole = this.repository.merge(role, updateRoleDto);
+
     return await this.repository.save(updatedRole);
   }
 

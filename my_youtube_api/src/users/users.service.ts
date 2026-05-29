@@ -2,16 +2,35 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
+import { RolesRepository } from 'src/roles/repositories/roles.repository';
 import { Role } from '../roles/entities/role.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
+    private readonly rolesRepository: RolesRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    return await this.usersRepository.createUser(createUserDto);
+    // récupérer le rôle USER
+    const defaultRole = await this.rolesRepository.findOne({
+      where: {
+        label: 'ROLE_USER',
+      },
+    });
+
+    if (!defaultRole) {
+      throw new NotFoundException('Default role USER not found');
+    }
+
+    // créer le user avec le rôle par défaut
+    const user = await this.usersRepository.createUser({
+      ...createUserDto,
+      roles: [defaultRole],
+    });
+
+    return user;
   }
 
   async findAll() {
@@ -50,7 +69,7 @@ export class UsersService {
     return user;
   }
 
-  // ✅ UPDATE USER AVEC GESTION DES ROLES
+  // UPDATE USER AVEC GESTION DES ROLES
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.findById(id, {
       relations: {
@@ -62,7 +81,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    // 🔥 transformation: number[] -> Role[]
+    // transformation: number[] -> Role[]
     const roles = updateUserDto.roles?.map((roleId) => ({
       id: roleId,
     })) as Role[] | undefined;
