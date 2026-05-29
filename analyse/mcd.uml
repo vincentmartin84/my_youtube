@@ -1,0 +1,25 @@
+@startuml
+
+class User {
+  - lastName
+  - firstName
+  - email
+  - password
+  - roles
+}
+
+class Video {
+  - title
+  - file
+  - createdAt
+  - views
+}
+
+class VideoFormat {
+  - format
+  - file
+}
+
+create : User "0,*" -- "1" Video
+have : Video "0,*" -- "1" VideoFormat
+@enduml

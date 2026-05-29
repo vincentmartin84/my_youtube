@@ -1,0 +1,26 @@
+@startUml
+
+class User {
+  - id primary key
+  - firstName varchar
+  - lastName varchar
+  - createdAt datetime
+  - user_id fk
+}
+
+class Video {
+  - id primary key
+  - title varchar
+  - file varchar
+  - user_id fk
+}
+
+class VideoFormat {
+  - id primary key
+  - format varchar
+  - file varchar
+  - video_id fk
+}
+
+
+@enduml
