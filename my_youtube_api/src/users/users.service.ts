@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException,   ConflictException, } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
@@ -13,6 +13,12 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+
+    const existingUser = await this.findByEmail(createUserDto.email);
+    if (existingUser) {
+      throw new ConflictException('User already exists');
+    }
+
     // récupérer le rôle USER
     const defaultRole = await this.rolesRepository.findOne({
       where: {
@@ -23,7 +29,7 @@ export class UsersService {
     if (!defaultRole) {
       throw new NotFoundException('Default role USER not found');
     }
-
+    
     // créer le user avec le rôle par défaut
     const user = await this.usersRepository.createUser({
       ...createUserDto,
@@ -62,44 +68,22 @@ export class UsersService {
       },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
     return user;
   }
 
-  // UPDATE USER AVEC GESTION DES ROLES
+  // UPDATE USER
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.usersRepository.findById(id, {
-      relations: {
-        roles: true,
-      },
-    });
+  const updatedUser = await this.usersRepository.updateUser(
+    id,
+    updateUserDto,
+  );
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    // transformation: number[] -> Role[]
-    const roles = updateUserDto.roles?.map((roleId) => ({
-      id: roleId,
-    })) as Role[] | undefined;
-
-    const dataToUpdate = {
-      ...updateUserDto,
-      roles,
-    };
-
-    await this.usersRepository.updateUser(id, dataToUpdate);
-
-    return this.usersRepository.findById(id, {
-      relations: {
-        roles: true,
-      },
-    });
+  if (!updatedUser) {
+    throw new NotFoundException('User not found');
   }
 
+  return updatedUser;
+}
   async delete(id: number) {
     await this.usersRepository.deleteUser(id);
 

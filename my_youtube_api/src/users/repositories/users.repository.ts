@@ -50,46 +50,20 @@ export class UsersRepository {
 
   async updateUser(
   id: number,
-  data: Partial<User>,
+  updateUserDto: UpdateUserDto,
 ): Promise<User | null> {
-  const user = await this.repository.findOne({
-    where: { id },
-    relations: { roles: true },
+  const user = await this.repository.preload({
+    id,
+    ...updateUserDto,
   });
 
   if (!user) {
     return null;
   }
 
-  Object.assign(user, data);
-
   return await this.repository.save(user);
 }
-
-
-
-
-
-/*
-  async updateUser(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User | null> {
-    const user = await this.repository.findOne({
-      where: { id },
-      relations: { roles: true },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    Object.assign(user, updateUserDto);
-
-    return await this.repository.save(user);
-  }
-*/
-
+ 
   async deleteUser(id: number): Promise<void> {
     await this.repository.delete(id);
   }
