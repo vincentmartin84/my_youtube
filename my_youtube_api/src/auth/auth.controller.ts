@@ -8,7 +8,7 @@ export class AuthController {
 
 
   constructor(
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) {}
 
   @Post('/register')
