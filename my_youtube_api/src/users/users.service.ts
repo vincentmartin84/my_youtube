@@ -4,16 +4,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { RolesRepository } from 'src/roles/repositories/roles.repository';
 import { Role } from '../roles/entities/role.entity';
+import { SecurityService } from 'src/security/security.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
+    private readonly securityService: SecurityService,
     private readonly rolesRepository: RolesRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-
     const existingUser = await this.findByEmail(createUserDto.email);
     if (existingUser) {
       throw new ConflictException('User already exists');
@@ -29,10 +30,12 @@ export class UsersService {
     if (!defaultRole) {
       throw new NotFoundException('Default role USER not found');
     }
-    
+    // hacher le mot de passe
+    const hashPassword = await this.securityService.hashPassword(createUserDto.password);
     // créer le user avec le rôle par défaut
     const user = await this.usersRepository.createUser({
       ...createUserDto,
+      password: hashPassword,
       roles: [defaultRole],
     });
 
