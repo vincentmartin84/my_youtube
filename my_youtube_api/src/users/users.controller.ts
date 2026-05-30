@@ -3,6 +3,9 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { User } from './entities/user.entity';
+import { CurrentUser } from './users.decorator';
+import { get } from 'http';
 
 @Controller('users')
 export class UsersController {
@@ -29,13 +32,13 @@ export class UsersController {
 
   @Patch(':id')
     @UseGuards(AuthGuard)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() currentUser: User) {
+    return this.usersService.update(+id, updateUserDto, currentUser);
   }
 
   @Delete(':id')
     @UseGuards(AuthGuard)
-  remove(@Param('id') id: string) {
-    return this.usersService.delete(+id);
+  remove(@Param('id') id: string, @CurrentUser() currentUser: any) {
+    return this.usersService.delete(+id, currentUser);
   }
 }

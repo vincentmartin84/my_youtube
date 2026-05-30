@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException,   ConflictException, } from '@nestjs/common';
+import { Injectable, NotFoundException,   ConflictException, ForbiddenException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { RolesRepository } from 'src/roles/repositories/roles.repository';
 import { Role } from '../roles/entities/role.entity';
+import { User } from './entities/user.entity';
 import { SecurityService } from 'src/security/security.service';
 
 @Injectable()
@@ -75,7 +76,14 @@ export class UsersService {
   }
 
   // UPDATE USER
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto, currentUser: User) {
+
+    if (currentUser.id !== +id) {
+        throw new ForbiddenException(
+      'You can update only your profil',
+    );
+  }
+  
   const updatedUser = await this.usersRepository.updateUser(
     id,
     updateUserDto,
@@ -87,7 +95,11 @@ export class UsersService {
 
   return updatedUser;
 }
-  async delete(id: number) {
+  async delete(id: number, currentUser: any) {
+
+    if (currentUser.sub !== +id) {
+      throw new ForbiddenException('You can only delete your profil');
+    }
     await this.usersRepository.deleteUser(id);
 
     return {
