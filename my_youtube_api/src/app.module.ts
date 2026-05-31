@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SecurityService } from './security/security.service';
 import { SecurityModule } from './security/security.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { SecurityModule } from './security/security.module';
     AuthModule,
 
     SecurityModule,
+
+    VideosModule,
   ],
 
   controllers: [AppController],

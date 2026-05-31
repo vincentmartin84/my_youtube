@@ -3,10 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
+  OneToMany,
   JoinTable,
 } from 'typeorm';
 
 import { Role } from '../../roles/entities/role.entity';
+import { Video } from 'src/videos/entities/video.entity';
 
 @Entity()
 export class User {
@@ -28,4 +30,7 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable()
   roles: Role[];
+
+ @OneToMany(() => Video, (video) => video.user)
+ videos: Video[]
 }
