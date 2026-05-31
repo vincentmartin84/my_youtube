@@ -24,8 +24,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  me(@CurrentUser() currentUser: any) {
+    return this.usersService.findByEmail(currentUser.userName);
+  }
+
   @Get(':id')
-    @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
     return this.usersService.findById(+id);
   }
